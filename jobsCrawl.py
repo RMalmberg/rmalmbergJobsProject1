@@ -1,3 +1,7 @@
+# create JSON file from http request
+# Sprint 1
+# By Raina Malmberg of 490-004
+
 import requests, json
 
 
@@ -6,18 +10,34 @@ url = "https://jobs.github.com/positions.json?utf8=%E2%9C%93&description=&locati
 
 def main():
     r = requests.get(url)
-    x = r.json()
+    outp = r.json()
 
     with open('my_data.txt', 'w', encoding='utf-8') as file:
-        json.dump(x, file, ensure_ascii=False, indent=4)
+        json.dump(outp, file, ensure_ascii=False, indent=4)
+
+    #print(x)
 
 
-def parse_json():
-    my_json = open('my_data.txt', 'r', encoding='utf-8')
-    some_data = [line.split('id:') for line in my_json.readlines()]
-    print(len(some_data))
+def count_data(filename:str):
+    my_json = open(filename, 'r', encoding='utf-8')
+    all_data = my_json.readlines()
+    num_jobs = len(all_data)/10
+    f = int(num_jobs)
+    print(f)
+
+
+def is_job(jobtitle:str):
+    j_json = open('my_data.txt', 'r', encoding='utf-8')
+    all_lines = j_json.readlines()
+
+    res = [i for i in all_lines if jobtitle in i]
+    # prints only relevant entry with jobtitle string
+    #https://www.geeksforgeeks.org/python-finding-strings-with-given-substring-in-list/
+    print(str(res))
+
 
 main()
-parse_json()
-#print_som_data()
+count_data('my_data.txt')
+#is_job("Site Reliability Engineer")
+
 
