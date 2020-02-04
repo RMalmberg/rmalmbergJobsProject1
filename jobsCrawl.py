@@ -10,10 +10,10 @@ url = "https://jobs.github.com/positions.json?utf8=%E2%9C%93&description=&locati
 
 def main():
     r = requests.get(url)
-    outp = r.json()
+    x = r.json()
 
     with open('my_data.txt', 'w', encoding='utf-8') as file:
-        json.dump(outp, file, ensure_ascii=False, indent=4)
+        json.dump(x, file, ensure_ascii=False, indent=4)
 
 
 def count_data(filename: str):
@@ -36,5 +36,8 @@ def is_job(jobtitle: str):
 
 
 main()
+print("my_data.txt written to directory containing jobsCrawl\nContains json info")
+print("Below is the number of job entries written to the text file  'my_data.txt'")
 count_data('my_data.txt')
-"""is_job("Site Reliability Engineer")"""
+print("\n\n Next is a Site Reliability Engineer posting from the GitHub Jobs API:\n")
+is_job("Site Reliability Engineer")
