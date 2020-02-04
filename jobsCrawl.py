@@ -2,11 +2,11 @@
 # Sprint 1
 # By Raina Malmberg of 490-004
 
-import requests, json
-
-
+import requests,\
+    json
 
 url = "https://jobs.github.com/positions.json?utf8=%E2%9C%93&description=&location="
+
 
 def main():
     r = requests.get(url)
@@ -15,10 +15,8 @@ def main():
     with open('my_data.txt', 'w', encoding='utf-8') as file:
         json.dump(outp, file, ensure_ascii=False, indent=4)
 
-    #print(x)
 
-
-def count_data(filename:str):
+def count_data(filename: str):
     my_json = open(filename, 'r', encoding='utf-8')
     all_data = my_json.readlines()
     num_jobs = len(all_data)/10
@@ -26,18 +24,17 @@ def count_data(filename:str):
     print(f)
 
 
-def is_job(jobtitle:str):
+def is_job(jobtitle: str):
     j_json = open('my_data.txt', 'r', encoding='utf-8')
     all_lines = j_json.readlines()
 
     res = [i for i in all_lines if jobtitle in i]
-    # prints only relevant entry with jobtitle string
-    #https://www.geeksforgeeks.org/python-finding-strings-with-given-substring-in-list/
+    """ prints only relevant entry with jobtitle string
+     https://www.geeksforgeeks.org/python-finding-strings-with-given-substring-in-list/
+    """
     print(str(res))
 
 
 main()
 count_data('my_data.txt')
 #is_job("Site Reliability Engineer")
-
-
