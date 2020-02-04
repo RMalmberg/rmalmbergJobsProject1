@@ -2,8 +2,8 @@
 # Sprint 1
 # By Raina Malmberg of 490-004
 
-import requests,\
-    json
+import requests
+import json
 
 url = "https://jobs.github.com/positions.json?utf8=%E2%9C%93&description=&location="
 
@@ -37,4 +37,4 @@ def is_job(jobtitle: str):
 
 main()
 count_data('my_data.txt')
-#is_job("Site Reliability Engineer")
+"""is_job("Site Reliability Engineer")"""
