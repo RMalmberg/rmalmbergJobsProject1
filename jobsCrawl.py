@@ -12,7 +12,6 @@ from typing import Dict, List, Tuple
 
 
 def get_git_jobs_data() -> List[Dict]:
-
     jobs_data = []
     page = 1
     more_data = True
@@ -39,11 +38,12 @@ def save_data_file(data, filename='my_data.txt'):
 
     return filename
 
+
 # SPRINT 1 JSON FUNCS ^
 # SPRINT 2 DATABASE FUNCS V
 
 
-def open_database(filename: str)->Tuple[sqlite3.Connection, sqlite3.Cursor]:
+def open_database(filename: str) -> Tuple[sqlite3.Connection, sqlite3.Cursor]:
     database_conn = sqlite3.connect(filename)  # connect or create
     cursor = database_conn.cursor()  # get ready to r/w data
     return database_conn, cursor
@@ -55,49 +55,37 @@ def close_database(conn: sqlite3.Connection):
 
 
 def setup_database(cursor: sqlite3.Cursor):
-
-    cursor.execute(""" CREATE TABLE IF NOT EXISTS jobs(
-    id TEXT PRIMARY KEY,
-    type TEXT NOT NULL,
-    url TEXT NOT NULL,
-    created_at TEXT NOT NULL,
-    date TEXT NOT NULL,
-    company TEXT NOT NULL,
-    company_url TEXT NOT NULL,
-    location TEXT NOT NULL,
-    title TEXT NOT NULL,
-    description TEXT NOT NULL,
-    how_to_apply TEXT NOT NULL,
-    company_logo TEXT NOT NULL
-    );""")
+    cursor.execute(""" CREATE TABLE github_jobs(
+        id TEXT PRIMARY KEY,
+        type TEXT,
+        url TEXT,
+        created_at TEXT,
+        company TEXT,
+        company_url TEXT,
+        location TEXT,
+        title TEXT,
+        description TEXT,
+        how_to_apply TEXT,
+        company_logo TEXT
+        );""")
 
 
-def save_to_database(cursor: sqlite3.Cursor):
+def save_git_to_database(cursor: sqlite3.Cursor, jobs_data):
+    insert_job_info_statement = f"""INSERT INTO github_jobs VALUES (?,?,?,?,?, ?,?,?,?,?, ?)"""
 
-        cursor.execute(f"""INSERT OR IGNORE INTO jobs(id, type, url, created_at, date, company, company_url, location, title, description,\
-                how_to_apply, company_logo) \
-                VALUES("1234", "Full Time", "www.com", DATE ('now'), "12/22", "hello", "hello.org", "a place", "Captain", "yaargh",\
-                 "online", "doodle.logo")""")
-
-
-def get_table_from_database(cursor: sqlite3.Cursor):
-    cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
-    table_result = cursor.fetchall()
-    print(table_result)
-    return table_result
+    for job_info in jobs_data:
+        #get job_info values from each dict to insert into our sqlite db
+        info_to_save = tuple(job_info.values())
+        cursor.execute(insert_job_info_statement, info_to_save)
 
 
-def get_jobs_dict_keys(json_data):
-        got_keys = False
-        for dict in json_data:
-            keys = dict.keys()
-            while got_keys == False:
-                with open("keys.txt", 'a', encoding='utf-8') as file:
-                    file.write(str(keys))
-                    got_keys = True
-        return keys
+def setup_test_table(cursor: sqlite3.Cursor):
+    cursor.execute(f"""INSERT INTO github_jobs VALUES ('1234','Part-Time','www.job.com', '1-1-1111', 'DreamCorps',
+        'dreamcorp.com', 'Hades', 'Software Engineer', 'Best job and company of Year 1111', 'online','logo-url') """)
 
 
+# practice
+    """"
 def get_keys_as_list(filename):
     with open(filename, 'r', encoding='utf-8') as file:
         key_list = file.readlines()
@@ -115,18 +103,35 @@ def get_jobs_dict_values(json_data):
     return val
 
 
+def get_table_from_database(cursor: sqlite3.Cursor):
+    cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+    table_result = cursor.fetchall()
+    print(table_result)
+    return table_result
+
+
+def get_jobs_dict_keys(json_data):
+    got_keys = False
+    for dict in json_data:
+        keys = dict.keys()
+        while not got_keys:
+            with open("keys.txt", 'a', encoding='utf-8') as file:
+                file.write(str(keys))
+                got_keys = True
+    return keys
+    """
+
+
 def main():
     my_data = get_git_jobs_data()
     save_data_file(my_data)
-    get_jobs_dict_keys(my_data)
+
     conn, cursor = open_database("my_db.sqlite")
     setup_database(cursor)
-    # saves dummy data to my_db.sqlite
-    save_to_database(cursor)
-    # gets table name from my_db.sqlite
-    get_table_from_database(cursor)
+
+    save_git_to_database(cursor, my_data)
 
     close_database(conn)
-   # my_keys = get_keys_as_list('keys.txt')
+
 
 main()
