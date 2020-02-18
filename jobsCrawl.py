@@ -125,16 +125,34 @@ def get_jobs_dict_keys(json_data):
 # SPRINT 2 FUNCS ^
 # SPRINT 3 HTML/XML PARSER FUNCS V
 
-def get_stackoverflow_jobs_data():
-    stack_request = requests.get("https://stackoverflow.com/jobs/feed")
-    print(stack_request.content)
 
+def get_stackoverflow_jobs_data():
+    # request get SO jobs feed
+    stack_jobs_data = []
+    stack_request = requests.get("https://stackoverflow.com/jobs/feed")
+    stack_jobs = stack_request.content
+    # create beautiful soup to parse html/xml
+    stack_jobs_soup = BeautifulSoup(stack_jobs, 'lxml')
+    # my soup grants us the power to access data in the xml file
+    # get all links in stack_jobs_Data
+    pubdate_tag = stack_jobs_soup.find_all("pubdate")
+
+    for _ in pubdate_tag:
+        stack_jobs_data.append(_)
+
+        #print(_)
+    print(len(stack_jobs_data))
+    #print(stack_jobs_soup.prettify())
+    #print(stack_jobs_data[1])
+    #return stack_jobs_data
 
 
 def main():
     #my_data = get_git_jobs_data()
     #save_data_file(my_data)
-    get_stackoverflow_jobs_data()
+    stack_data = get_stackoverflow_jobs_data()
+    #save_data_file(stack_data)
+
    # conn, cursor = open_database("my_db.sqlite")
    # setup_database(cursor)
 
