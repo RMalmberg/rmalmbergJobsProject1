@@ -7,6 +7,7 @@ import requests
 import json
 import time
 import sqlite3
+from bs4 import BeautifulSoup
 
 from typing import Dict, List, Tuple
 
@@ -121,17 +122,25 @@ def get_jobs_dict_keys(json_data):
     return keys
     """
 
+# SPRINT 2 FUNCS ^
+# SPRINT 3 HTML/XML PARSER FUNCS V
+
+def get_stackoverflow_jobs_data():
+    stack_request = requests.get("https://stackoverflow.com/jobs/feed")
+    print(stack_request.content)
+
+
 
 def main():
-    my_data = get_git_jobs_data()
-    save_data_file(my_data)
+    #my_data = get_git_jobs_data()
+    #save_data_file(my_data)
+    get_stackoverflow_jobs_data()
+   # conn, cursor = open_database("my_db.sqlite")
+   # setup_database(cursor)
 
-    conn, cursor = open_database("my_db.sqlite")
-    setup_database(cursor)
+    #save_git_to_database(cursor, my_data)
 
-    save_git_to_database(cursor, my_data)
-
-    close_database(conn)
+   # close_database(conn)
 
 
 main()
