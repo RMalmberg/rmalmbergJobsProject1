@@ -1,13 +1,13 @@
-# create SQLite Database from my_data.txt
+# create SQLite Database from Stack Overflow RSS feed
 
-# Sprint 2
+# Sprint 3
 # By Raina Malmberg of 490-004
 
 import requests
 import json
 import time
 import sqlite3
-from bs4 import BeautifulSoup
+import feedparser
 
 from typing import Dict, List, Tuple
 
@@ -75,6 +75,7 @@ def save_git_to_database(cursor: sqlite3.Cursor, jobs_data):
     insert_job_info_statement = f"""INSERT INTO github_jobs VALUES (?,?,?,?,?, ?,?,?,?,?, ?)"""
 
     for job_info in jobs_data:
+
         #get job_info values from each dict to insert into our sqlite db
         info_to_save = tuple(job_info.values())
         cursor.execute(insert_job_info_statement, info_to_save)
@@ -124,33 +125,51 @@ def get_jobs_dict_keys(json_data):
 
 # SPRINT 2 FUNCS ^
 # SPRINT 3 HTML/XML PARSER FUNCS V
-
+def feedparse_fun():
+    feed = feedparser.parse("https://stackoverflow.com/jobs/feed")
+    print(feed.entries[1].id)
 
 def get_stackoverflow_jobs_data():
-    # request get SO jobs feed
-    stack_jobs_data = []
-    stack_request = requests.get("https://stackoverflow.com/jobs/feed")
-    stack_jobs = stack_request.content
-    # create beautiful soup to parse html/xml
-    stack_jobs_soup = BeautifulSoup(stack_jobs, 'lxml')
-    # my soup grants us the power to access data in the xml file
-    # get all links in stack_jobs_Data
-    pubdate_tag = stack_jobs_soup.find_all("pubdate")
 
-    for _ in pubdate_tag:
-        stack_jobs_data.append(_)
+    feed = feedparser.parse("https://stackoverflow.com/jobs/feed")
 
-        #print(_)
-    print(len(stack_jobs_data))
-    #print(stack_jobs_soup.prettify())
-    #print(stack_jobs_data[1])
-    #return stack_jobs_data
+    entries = feed.entries
+
+    return entries
+
+def setup_SO_database(cursor: sqlite3.Cursor):
+    cursor.execute(""" CREATE TABLE stackoverflow_jobs(
+        id TEXT NOT NULL PRIMARY KEY,
+        title TEXT NOT NULL,
+        link TEXT NOT NULL,
+        description TEXT NOT NULL,
+        category TEXT NOT NULL
+        );""")
+
+
+def save_SO_to_database(cursor: sqlite3.Cursor, stack_data):
+    insert_statement = f"""INSERT INTO stackoverflow_jobs VALUES (?, ?, ?, ?, ?)"""
+    #?,?,?,?, ?)
+    for job_info in stack_data:
+        # get job_info values from each key to insert into our sqlite db for SO
+        cursor.execute(insert_statement, [job_info['id'], job_info['title'], job_info['link'], job_info['description'], job_info['category']])
+
 
 
 def main():
+    my_so_data = get_stackoverflow_jobs_data()
+    conn, cursor = open_database("my_SO_db.sqlite")
+    setup_SO_database(cursor)
+    save_SO_to_database(cursor, my_so_data)
+    close_database(conn)
+
+
+
+    #feedparse_fun()
     #my_data = get_git_jobs_data()
     #save_data_file(my_data)
-    stack_data = get_stackoverflow_jobs_data()
+
+    #stack_data = get_stackoverflow_jobs_data()
     #save_data_file(stack_data)
 
    # conn, cursor = open_database("my_db.sqlite")
