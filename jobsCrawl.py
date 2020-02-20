@@ -76,7 +76,7 @@ def save_git_to_database(cursor: sqlite3.Cursor, jobs_data):
 
     for job_info in jobs_data:
 
-        #get job_info values from each dict to insert into our sqlite db
+        # get job_info values from each dict to insert into our sqlite db
         info_to_save = tuple(job_info.values())
         cursor.execute(insert_job_info_statement, info_to_save)
 
@@ -125,9 +125,12 @@ def get_jobs_dict_keys(json_data):
 
 # SPRINT 2 FUNCS ^
 # SPRINT 3 HTML/XML PARSER FUNCS V
-def feedparse_fun():
+
+
+def feedparser_fun():
     feed = feedparser.parse("https://stackoverflow.com/jobs/feed")
     print(feed.entries[1].id)
+
 
 def get_stackoverflow_jobs_data():
 
@@ -137,7 +140,8 @@ def get_stackoverflow_jobs_data():
 
     return entries
 
-def setup_SO_database(cursor: sqlite3.Cursor):
+
+def setup_so_database(cursor: sqlite3.Cursor):
     cursor.execute(""" CREATE TABLE stackoverflow_jobs(
         id TEXT NOT NULL PRIMARY KEY,
         title TEXT NOT NULL,
@@ -147,37 +151,42 @@ def setup_SO_database(cursor: sqlite3.Cursor):
         );""")
 
 
-def save_SO_to_database(cursor: sqlite3.Cursor, stack_data):
+def save_so_to_database(cursor: sqlite3.Cursor, stack_data):
     insert_statement = f"""INSERT INTO stackoverflow_jobs VALUES (?, ?, ?, ?, ?)"""
-    #?,?,?,?, ?)
     for job_info in stack_data:
         # get job_info values from each key to insert into our sqlite db for SO
         cursor.execute(insert_statement, [job_info['id'], job_info['title'], job_info['link'], job_info['description'], job_info['category']])
 
+# Sprint 3 Testing funcs
+
+
+def create_test_table(cursor: sqlite3.Cursor):
+    cursor.execute(""" CREATE TABLE SO_Test(
+        id text NOT NULL PRIMARY KEY
+    );""")
+
+
+def pop_test_table(cursor: sqlite3.Cursor, stack_data):
+    for job_info in stack_data:
+        cursor.execute("""INSERT INTO SO_Test VALUES (?)""", [job_info['id']])
 
 
 def main():
     my_so_data = get_stackoverflow_jobs_data()
     conn, cursor = open_database("my_SO_db.sqlite")
-    setup_SO_database(cursor)
-    save_SO_to_database(cursor, my_so_data)
+    setup_so_database(cursor)
+    save_so_to_database(cursor, my_so_data)
     close_database(conn)
 
+# Sprint 1 & 2 commands
+# my_data = get_git_jobs_data()
+# save_data_file(my_data)
 
+# conn, cursor = open_database("my_db.sqlite")
+# setup_database(cursor)
 
-    #feedparse_fun()
-    #my_data = get_git_jobs_data()
-    #save_data_file(my_data)
-
-    #stack_data = get_stackoverflow_jobs_data()
-    #save_data_file(stack_data)
-
-   # conn, cursor = open_database("my_db.sqlite")
-   # setup_database(cursor)
-
-    #save_git_to_database(cursor, my_data)
-
-   # close_database(conn)
+# save_git_to_database(cursor, my_data)
+# close_database(conn)
 
 
 main()

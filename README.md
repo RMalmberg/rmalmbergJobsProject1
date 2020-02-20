@@ -1,13 +1,15 @@
 # rmalmbergJobsProject1
-# Current Sprint 2
+# Current Sprint 3
 What it does:
-creates a sqlite database with some generic data and hardcode fields
-one new test implemented to check for keys and values of dicts saved to .txt
+creates a sqlite database with Stack Overflow RSS feed data
+5 fields: ID, Title, Link, Description, and Category
 
+Tests: n/a
+
+# Past Sprints (2)
 What it does not do:
 pull data from my_data.txt
 
-# Past Sprints (1)
 a small program that saves json data from the Github Jobs API to a txt file.
 
 What it does:
