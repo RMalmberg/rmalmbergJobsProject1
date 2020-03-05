@@ -16,7 +16,7 @@ def get_stackoverflow_jobs_data():
 
     return entries
 
-
+# Sprint 3
 def setup_so_database(cursor: sqlite3.Cursor):
     cursor.execute(""" CREATE TABLE stack_overflow_jobs(
         id TEXT NOT NULL PRIMARY KEY,
@@ -26,18 +26,17 @@ def setup_so_database(cursor: sqlite3.Cursor):
         description TEXT NOT NULL
         );""")
 
-# TO-DO: Write insert table here
-
 
 def save_so_to_database(cursor: sqlite3.Cursor, stack_data):
 
-    insert_statement = f"""INSERT INTO stack_overflow_jobs VALUES (?,?,?, ?,?)"""
+    insert_statement = f"""INSERT OR IGNORE INTO jobs_api_data (id, link, url, description) VALUES (?,?,?, ?,?)"""
     for job_info in stack_data:
-        # get job_info values from each key to insert into our sqlite db for SO
-        cursor.execute(insert_statement, [job_info['id'], job_info['category'], job_info['link'],
+        # populate rows for all jobs
+        cursor.execute(insert_statement, [job_info['id'],  job_info['link'],
                                           job_info['title'], job_info['description'],
                                           ])
 
+# job_info['category'],
 # Sprint 3 Testing funcs
 
 

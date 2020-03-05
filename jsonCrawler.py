@@ -34,6 +34,7 @@ def get_git_jobs_data() -> List[Dict]:
 
 
 def save_data_file(data, filename='my_data.txt'):
+
     with open(filename, 'a', encoding='utf-8') as file:
         json.dump(data, file, ensure_ascii=False, indent=4)
 
@@ -41,11 +42,10 @@ def save_data_file(data, filename='my_data.txt'):
 
 
 def save_git_to_database(cursor: sqlite3.Cursor, jobs_data):
-    insert_job_info_statement = f"""INSERT INTO github_jobs VALUES (?,?,?,?,?, ?,?,?,?)"""
+    insert_job_info_statement = f"""INSERT INTO jobs_api_data VALUES (?,?,?,?,?, ?,?,?,?)"""
 
     for job_info in jobs_data:
-
-        # get job_info values from each dict to insert into our sqlite db
+        # save job info to table
         info_to_save = tuple(job_info.values())
         cursor.execute(insert_job_info_statement, info_to_save)
 
@@ -62,13 +62,6 @@ def setup_git_database(cursor: sqlite3.Cursor):
         title TEXT,
         description TEXT
         );""")
-
-# SPRINT 1 JSON FUNCS ^
-
-
-def setup_test_table(cursor: sqlite3.Cursor):
-    cursor.execute(f"""INSERT INTO github_jobs VALUES ('1234','Part-Time','www.job.com', '1-1-1111', 'DreamCorps',
-        'dreamcorp.com', 'Hades', 'Software Engineer', 'Best job and company of Year 1111', 'online','logo-url') """)
 
 
 # practice
@@ -108,18 +101,5 @@ def get_jobs_dict_keys(json_data):
     return keys
     """
 
-
-# SPRINT 3 HTML/XML PARSER FUNCS V
-
-
-# Sprint 1 & 2 commands
-# my_data = get_git_jobs_data()
-# save_data_file(my_data)
-
-# conn, cursor = open_database("my_db.sqlite")
-# setup_database(cursor)
-
-# save_git_to_database(cursor, my_data)
-# close_database(conn)
 
 
