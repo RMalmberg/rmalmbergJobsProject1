@@ -1,2 +1,6 @@
 requests
 feedparser
+sqlite3
+pandas
+geopy
+sqlalchemy

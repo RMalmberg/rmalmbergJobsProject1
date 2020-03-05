@@ -2,7 +2,9 @@ import requests
 import time
 import sqlite3
 import feedparser
-
+import pandas
+import sqlalchemy as sa
+import geopy
 from typing import Dict, List, Tuple
 
 
@@ -46,11 +48,13 @@ def get_git_jobs_data() -> List[Dict]:
 
         if "GitHubber!" in raw_data:  # only happens in testing
             continue
-
-        partial_output = raw_data.json()
-        jobs_data.extend(partial_output)
-        if len(partial_output) < 50:
-            more_data = False
+        if 'json' in raw_data.headers.get('Content-Type'):
+            partial_output = raw_data.json()
+            jobs_data.extend(partial_output)
+            if len(partial_output) < 50:
+                more_data = False
+        else:
+            print("data is not in json format")
         time.sleep(.1)
         page += 1
 
@@ -86,6 +90,17 @@ def save_so_to_database(cursor: sqlite3.Cursor, stack_data):
                                           ])
 
 
+def establish_pandas_engine():
+    engine = sa.create_engine('sqlite:///my_db4.sqlite')
+    df = pandas.read_sql_table("jobs_api_data", engine, columns=['location'])
+    print(df)
+    
+# now we have the locations for every job that has a locate in the db.
+# next: use geopy to reverse location name into coords
+# create new coords table and populate lat and long with the returned list of coords, liost of dicts?
+# use pandas dataframe on coords table to plot chart data with the rest of the data from jobs api data
+
+
 def main():
     my_git_data = get_git_jobs_data()
     my_so_data = get_stack_overflow_jobs_data()
@@ -93,7 +108,12 @@ def main():
     setup_database(cursor)
     save_git_to_database(cursor, my_git_data)
     save_so_to_database(cursor, my_so_data)
+   # establish_pandas_engine()
     close_database(conn)
 
 
-main()
+def main2():
+    establish_pandas_engine()
+
+#main()
+main2()
