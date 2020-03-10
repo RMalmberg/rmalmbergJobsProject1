@@ -1,12 +1,23 @@
 # rmalmbergJobsProject1
-# Current Sprint 3
+# Current Sprint 4
+Instructions: run jobsDB.py
+
+~ I was able to map the github jobs data to a scatter plot of the USA
+
+I have a few tests that check for good dat and bad data.
+
+Stack overflow location geocoding causes a timeout error so this dataset is left out.
+ 
+
+
+# Past Sprints (3)
 What it does:
 creates a sqlite database with Stack Overflow RSS feed data
 5 fields: ID, Title, Link, Description, and Category
 
 Tests: n/a
 
-# Past Sprints (2)
+
 What it does not do:
 pull data from my_data.txt
 
