@@ -147,7 +147,7 @@ def create_coords_table(cursor: sqlite3.Cursor):
         id TEXT PRIMARY KEY,
         location NOT NULL,
         latitude REAL NOT NULL,
-        longitude REAL NOT NULL    
+        longitude REAL NOT NULL
         );""")
 
 
@@ -186,12 +186,12 @@ def data_runner():
 
 def main():
     my_git_data = get_git_jobs_data()
-    my_so_data = get_stack_overflow_jobs_data()
+    # my_so_data = get_stack_overflow_jobs_data()
     data_runner()
     conn, cursor = open_database("my_db4.sqlite")
     create_coords_table(cursor)
     convert_location_to_coords_git(cursor, my_git_data)
-    #convert_location_to_coords_so(cursor, my_so_data)
+    # convert_location_to_coords_so(cursor, my_so_data)
     close_database(conn)
 
 
